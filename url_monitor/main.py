@@ -139,86 +139,86 @@ def main(arguments=None):
             exit(1)
         except Exception as e:
             logger.error("lockfile exception: a general exception occured while acquiring "
-                "lockfile.FileLock {0}".format(e))
+                         "lockfile.FileLock {0}".format(e))
             exit(1)
 
         if lock.is_locked():
             logger.critical(
                 " Fail! Process already running with PID {0}. EXECUTION STOP.".format(lock.pid))
             exit(1)
-        else:
-            with lock: # context will .release() automatically
-                logger.info(
-                    "PID lock acquired {0} {1}".format(lock.path, lock.pid))
+        with lock:  # context will .release() automatically
+            logger.info(
+                "PID lock acquired {0} {1}".format(lock.path, lock.pid))
 
-                # run check
-                completed_runs = []  # check results
-                for checkitem in config['checks']:
-                    try:
-                        if (inputflag.key is not None and
-                                checkitem['key'] == inputflag.key):
-                            # --key defined and name matched! only run 1 check
-                            rc, checkobj = action.check(
-                                checkitem, configinstance, logger
+            # run check
+            completed_runs = []  # check results
+            for checkitem in config['checks']:
+                try:
+                    if (inputflag.key is not None and
+                            checkitem['key'] == inputflag.key):
+                        # --key defined and name matched! only run 1 check
+                        rc, checkobj = action.check(
+                            checkitem, configinstance, logger
+                        )
+                        completed_runs.append(
+                            (
+                                rc,
+                                checkitem['key'],
+                                checkobj
                             )
-                            completed_runs.append(
-                                (
-                                    rc,
-                                    checkitem['key'],
-                                    checkobj
-                                )
+                        )
+                    elif not inputflag.key:
+                        # run all checks
+                        rc, checkobj = action.check(
+                            checkitem, configinstance, logger
+                        )
+                        completed_runs.append(
+                            (
+                                rc,
+                                checkitem['key'],
+                                checkobj
                             )
-                        elif not inputflag.key:
-                            # run all checks
-                            rc, checkobj = action.check(
-                                checkitem, configinstance, logger
-                            )
-                            completed_runs.append(
-                                (
-                                    rc,
-                                    checkitem['key'],
-                                    checkobj
-                                )
-                            )
-                    except Exception as e:
-                        logger.exception(e)
+                        )
+                except Exception as e:
+                    logger.exception(e)
 
-                # set run status overall
-                for check in completed_runs:
-                    rc, name, values = check
-                    if rc == 0 and set_rc == 0:
-                        set_rc = 0
-                    else:
-                        set_rc = 1
-
-                # report errors
-                badmsg = "with errors    [FAIL]"
-                if set_rc == 0:
-                    badmsg = "without errors    [ OK ]"
-                logger.info("Checks have completed {0}".format(badmsg))
-
-                # Report final conditions to zabbix (so informational alerting can
-                # be built around failed script runs, exceptions, network errors,
-                # timeouts, etc)
-                logger.info(
-                    "Sending execution summary to zabbix server as Metrics objects"
-                )
-
-                if not values:  # Do you see uncaught requests.exceptions?
-                    values = {'EXECUTION_STATUS': 1}  # trigger an alert
-
-                metrickey = config['config'][
-                    'zabbix']['checksummary_key_format']
-
-                check_completion_status = [Metric(
-                    config['config']['zabbix']['host'], metrickey, set_rc
-                )]
-
-                logger.debug("Summary: {0}".format(check_completion_status))
-                if not action.transmitfacade(config, check_completion_status, logger=logger):
-                    logger.critical(
-                        "Sending execution summary to zabbix server failed!")
+            # set run status overall
+            for check in completed_runs:
+                rc, name, values = check
+                if rc == 0 and set_rc == 0:
+                    set_rc = 0
+                else:
                     set_rc = 1
+
+            # report errors
+            badmsg = "with errors    [FAIL]"
+            if set_rc == 0:
+                badmsg = "without errors    [ OK ]"
+            logger.info("Checks have completed {0}".format(badmsg))
+
+            # Report final conditions to zabbix (so informational alerting can
+            # be built around failed script runs, exceptions, network errors,
+            # timeouts, etc)
+            logger.info(
+                "Sending execution summary to zabbix server as Metrics objects"
+            )
+
+            if not values:  # Do you see uncaught requests.exceptions?
+                values = {'EXECUTION_STATUS': 1}  # trigger an alert
+
+            metrickey = config['config'][
+                'zabbix']['checksummary_key_format']
+
+            check_completion_status = [Metric(
+                config['config']['zabbix']['host'], metrickey, set_rc
+            )]
+
+            logger.debug("Summary: {0}".format(check_completion_status))
+            if not action.transmitfacade(config, check_completion_status, logger=logger):
+                logger.critical(
+                    "Sending execution summary to zabbix server failed!")
+                set_rc = 1
+    if inputflag.COMMAND == "discover":
         action.discover(inputflag, configinstance, logger)
         set_rc = 0
 

@@ -1,8 +1,14 @@
-## 3.0.2-1 (Nov 10 2016)
+## 3.0.3-1 (Nov 11 2016)
+
+Fixes
+
+  - Issue (race condition) in lockfile. Oops.
 
 Improvements
 
   - Improve pidfile name resolution/path resolution handling.
+
+## 3.0.2-1 (Nov 10 2016)
 
 Fixes
 
