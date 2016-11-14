@@ -16,4 +16,4 @@ emails = ['jon.kelley@rackspace.com',
           'nick.bales@rackspace.com',
           'landon.jurgens@rackspace.com']
 
-__version__ = "0.0.0"
+__version__ = "3.0.4"

@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           url_monitor
-Version:        3.0.3
+Version:        3.0.4
 Release:        1%{?dist}
 Group:          Applications/Systems
 Summary:        This is an external script for zabbix for monitoring restful endpoints for data.
@@ -54,6 +54,12 @@ mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
 %attr(0755,-,-) %{_bindir}/%{name}
 
 %changelog
+* Mon Nov 14 2016 Jonathan Kelley <jon.kelley@rackspace.com> - 3.0.4-1
+- New Version 3.0.4
+
+* Mon Nov 14 2016 Jonathan Kelley <jon.kelley@rackspace.com> - 3.0.3-1
+- New Version 3.0.3
+
 * Thu Nov 10 2016 Jonathan Kelley <jon.kelley@rackspace.com> - 3.0.2-1
 - Update spec version
 

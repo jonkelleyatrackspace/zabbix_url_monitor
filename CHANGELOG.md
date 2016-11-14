@@ -1,3 +1,17 @@
+## Version 3.0.4-1 (Mon Nov 14 2016) @Jonathan Kelley
+
+Improvements:
+
+* Add ./makeversion ops tool to repository, can now cut versions with ./makeversion.sh x.x.x
+* Re-introduce --version support now we can reference a local version object.
+
+Fixes:
+* Add missing version 3.0.3 to specfile from last release
+
+
+-----
+
+
 ## 3.0.3-1 (Nov 11 2016)
 
 Fixes

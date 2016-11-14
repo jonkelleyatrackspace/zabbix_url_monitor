@@ -11,7 +11,7 @@ if __name__ == "__main__":
     package = "url_monitor"
     setup(
         name=package,
-        version="3.0.3",
+        version="3.0.4",
         author="Rackspace Inc",
         author_email="jon.kelley@rackspace.com",
         url="https://github.com/rackerlabs/zabbix_url_monitor",
