@@ -21,6 +21,7 @@ from url_monitor import authors as authorsmacro
 from url_monitor import description as descriptionmacro
 from url_monitor import authors as emailsmacro
 from url_monitor import project as projectmacro
+from url_monitor import __version__ as version
 
 
 __doc__ = """Program entry point / arg handling / check passfail review"""
@@ -71,7 +72,7 @@ def main(arguments=None):
         "-V",
         "--version",
         action='version',
-        version='UNSUPPORTED OPTION'
+        version=version
     )
     arg_parser.add_argument(
         "--key",
